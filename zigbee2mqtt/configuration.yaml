@@ -1,0 +1,83 @@
+version: 4
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://core-mosquitto:1883
+  user: addons
+  password: !secret mqtt_password
+serial:
+  port: tcp://192.168.86.60:6638
+  adapter: ember
+  baudrate: 115200
+  rtscts: false
+advanced:
+  log_level: info
+  channel: 11
+  network_key:
+    - 209
+    - 25
+    - 132
+    - 166
+    - 183
+    - 216
+    - 72
+    - 63
+    - 152
+    - 88
+    - 120
+    - 0
+    - 73
+    - 48
+    - 210
+    - 50
+  pan_id: 50999
+  ext_pan_id:
+    - 3
+    - 25
+    - 213
+    - 54
+    - 148
+    - 200
+    - 185
+    - 56
+frontend:
+  enabled: true
+  port: 8099
+homeassistant:
+  enabled: true
+devices:
+  '0x842712fffe3f888a':
+    friendly_name: TV Room Climate Sensor
+  '0x28dba7fffe78ea6e':
+    friendly_name: Attic Climate Sensor
+  '0x842712fffe73c926':
+    friendly_name: Basement Climate Sensor
+  '0x00158d008b89250e':
+    friendly_name: Kitchen Sink Flood
+  '0x00158d008bb30fa5':
+    friendly_name: Mud Room Flood
+  '0x00158d008b88f8e6':
+    friendly_name: Powder Room Flood
+  '0x00158d008b892549':
+    friendly_name: Kid Bath Flood
+  '0x00158d008bb316cc':
+    friendly_name: Primary Bath Flood
+  '0x00158d008bb31705':
+    friendly_name: Basement Flood
+  '0xa49e69fffe719799':
+    friendly_name: Second Floor Climate
+  '0xf44250c39f1c0000':
+    friendly_name: Indicator Light
+  '0xa4c138b479ba9a2f':
+    friendly_name: Garage Door Opener
+  '0x881a14fffe411f8b':
+    friendly_name: Primary Bedroom Fan
+  '0xc02cedfffeef265d':
+    friendly_name: Primary Bedroom Ceiling Lights
+  '0xa49e69fffe711cdf':
+    friendly_name: Front Porch
+  '0xf4b3b1fffe6b5ef9':
+    friendly_name: Basement Stairs
+  '0xd44867fffea70adb':
+    friendly_name: Primary Bedroom Fan Switch
+  '0x04e3e5fffe5f421e':
+    friendly_name: Primary Bedroom Fan Light Switch

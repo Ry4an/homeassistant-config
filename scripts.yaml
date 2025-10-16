@@ -1,0 +1,103 @@
+emergency_message:
+  sequence:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: '{{ message }}'
+      title: '{{ title }}'
+      data:
+        color: red
+        channel: Emergency
+        vibrationPattern: 100, 1000, 100, 1000, 100
+        car_ui: true
+        notification_icon: mdi:bullhorn
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.guest_bedroom_speaker
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.noah_s_room_display
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.primary_bedroom_speaker
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.sasha_s_room_display
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.attic_speaker
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.kitchen_wifi
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.backyard_wifi
+      message: '{{ title }} {{ message }}'
+    target:
+      entity_id: tts.google_translate_en_com
+  fields:
+    message:
+      selector:
+        text:
+      name: Message
+      description: The urgent message body.
+      default: Something urgent is happening!
+      required: true
+    title:
+      selector:
+        text:
+      name: Title
+      description: The title of the message
+      default: Something urgent is happening!
+  alias: Emergency Message
+  description: For sending loud messages of big problems.
+  icon: mdi:bullhorn
+reboot_cable_modem:
+  sequence:
+  - type: turn_off
+    device_id: 7cb4598bf2bd7a7272fe7d1d682084f6
+    entity_id: 479f0a521ae721c3979c749ba6695d5c
+    domain: switch
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - type: turn_on
+    device_id: 7cb4598bf2bd7a7272fe7d1d682084f6
+    entity_id: 479f0a521ae721c3979c749ba6695d5c
+    domain: switch
+  alias: Reboot Cable Modem
+  description: ''

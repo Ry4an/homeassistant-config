@@ -1,0 +1,677 @@
+- id: '1749905971286'
+  alias: Announce Washer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.washer_current_status
+    to: end
+  conditions:
+  - condition: state
+    entity_id: schedule.do_not_disturb
+    state: 'off'
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    data:
+      is_volume_muted: false
+    target:
+      device_id:
+      - 5994e009897952ba10fd47dfbb2c50a6
+      - f6d3ddb145fd6d34278b1e0d181e35b2
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The washer is done
+      media_player_entity_id: media_player.kitchen_wifi
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The washer is done
+      media_player_entity_id: media_player.guest_bedroom_speaker
+    target:
+      entity_id: tts.google_translate_en_com
+  mode: single
+- id: '1752958950168'
+  alias: Water Detected
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.basement_flood_water_leak
+    - binary_sensor.kid_bath_flood_water_leak
+    - binary_sensor.kitchen_sink_flood_water_leak
+    - binary_sensor.powder_room_flood_water_leak
+    - binary_sensor.primary_bath_flood_water_leak
+    - binary_sensor.mud_room_flood_water_leak
+    to: 'on'
+    from:
+  conditions: []
+  actions:
+  - action: script.emergency_message
+    metadata: {}
+    data:
+      message: '{% if trigger.platform is not none %} {{trigger.to_state.attributes.friendly_name}}
+        {% else %} Unknown Sensor {% endif %}has detected water!'
+      title: Water Sensor Triggered!
+  mode: single
+- id: '1753622587006'
+  alias: Alert on Power Loss
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.battery_backup_transfer_to_battery
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Home Networking is running on battery backup
+      title: Power Outage
+  mode: single
+- id: '1753622694981'
+  alias: Alert on Power Restoration
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.basement_transfer_from_battery
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Home Networking is back on grid power
+      title: Power Restored
+  mode: single
+- id: '1754009431185'
+  alias: AC May Be Malfunctioning
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.tv_room_climate_sensor_temperature
+    above: 75
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Living room is over 75 degrees
+      title: Living room is hot
+  mode: single
+- id: '1754015852684'
+  alias: Low Disk Warning
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.home_assistant_host_disk_free
+    below: 14
+  conditions: []
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: Disk Space Low
+      notification_id: disk-low
+      message: Disk is more than half full
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Home Assistant disk is more than half full
+      title: Disk Space Low
+  mode: single
+- id: '1754403564447'
+  alias: Ruby Got Home
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - device_tracker.ruby_tracker
+    from: not_home
+    to: home
+  conditions: []
+  actions:
+  - action: input_datetime.set_datetime
+    metadata: {}
+    data:
+      timestamp: '{{ now().timestamp() }}'
+    target:
+      entity_id: input_datetime.ruby_s_last_walk
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: Ruby last walked at {{ now().strftime("%I:%M%p") }}
+    target:
+      entity_id: input_text.ruby_last_walk
+  mode: single
+- id: '1754404707440'
+  alias: Freeze Warning
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.tv_room_climate_sensor_temperature
+    - sensor.attic_climate_sensor_temperature
+    - sensor.basement_climate_sensor_temperature
+    - sensor.second_floor_climate_temperature
+    below: 50
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: House is below 50 degrees.
+      title: Freeze Warning
+  mode: single
+- id: '1754405103983'
+  alias: Announce Dryer
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.dryer_breakers_20_22_power_minute_average
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    below: 50
+  conditions:
+  - condition: state
+    entity_id: schedule.do_not_disturb
+    state: 'off'
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    data:
+      is_volume_muted: false
+    target:
+      device_id:
+      - 5994e009897952ba10fd47dfbb2c50a6
+      - f6d3ddb145fd6d34278b1e0d181e35b2
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The dryer is done
+      media_player_entity_id: media_player.kitchen_wifi
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The dryer is done
+      media_player_entity_id: media_player.guest_bedroom_speaker
+    target:
+      entity_id: tts.google_translate_en_com
+  mode: single
+- id: '1754415706231'
+  alias: Detect Dishwasher Start
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.dishwasher_power_minute_average
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 300
+  conditions:
+  - condition: state
+    entity_id: input_select.dishwasher_status
+    state: IDLE
+  actions:
+  - action: input_select.select_option
+    metadata: {}
+    data:
+      option: RUNNING
+    target:
+      entity_id: input_select.dishwasher_status
+  mode: single
+- id: '1754415831576'
+  alias: Detect Dishwasher Stop
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.dishwasher_power_minute_average
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    below: 1
+  conditions:
+  - condition: state
+    entity_id: input_select.dishwasher_status
+    state: RUNNING
+  actions:
+  - action: input_select.select_option
+    metadata: {}
+    data:
+      option: IDLE
+    target:
+      entity_id: input_select.dishwasher_status
+  mode: single
+- id: '1754416271016'
+  alias: Announce Dishwasher
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_select.dishwasher_status
+    to: IDLE
+  conditions:
+  - condition: state
+    entity_id: schedule.do_not_disturb
+    state: 'off'
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    data:
+      is_volume_muted: false
+    target:
+      device_id:
+      - 5994e009897952ba10fd47dfbb2c50a6
+      - f6d3ddb145fd6d34278b1e0d181e35b2
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The dishwasher is done
+      media_player_entity_id: media_player.kitchen_wifi
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: The dishwasher is done
+      media_player_entity_id: media_player.guest_bedroom_speaker
+    target:
+      entity_id: tts.google_translate_en_com
+  mode: single
+- id: '1755269858350'
+  alias: Desktop Backup Successful
+  description: ''
+  triggers:
+  - trigger: webhook
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: true
+    webhook_id: -8s7VFmxvDrJIl3tmfHgqc5Qf
+  conditions: []
+  actions:
+  - action: input_datetime.set_datetime
+    metadata: {}
+    data:
+      timestamp: '{{ now().timestamp() }}'
+    target:
+      entity_id: input_datetime.last_desktop_backup
+  mode: single
+- id: '1755309366927'
+  alias: Turn off TV on home screen
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.downstairs_tv_active_app
+    to: unknown
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  - trigger: state
+    entity_id:
+    - sensor.downstairs_tv_active_app
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+    to: Home
+  - device_id: 7d7c32100c315a322163407d734ef6a7
+    domain: media_player
+    entity_id: 00e1c71b2b88ab41e2d57c41995b0256
+    type: idle
+    trigger: device
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  conditions:
+  - condition: device
+    type: is_on
+    device_id: 7d7c32100c315a322163407d734ef6a7
+    entity_id: 81bef795f7625e33c1f6039dff1fe303
+    domain: remote
+  actions:
+  - type: turn_off
+    device_id: 7d7c32100c315a322163407d734ef6a7
+    entity_id: 81bef795f7625e33c1f6039dff1fe303
+    domain: remote
+  mode: single
+- id: '1756122790923'
+  alias: Noah leaves for school
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:48:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  conditions: []
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    data:
+      is_volume_muted: false
+    target:
+      device_id:
+      - 5994e009897952ba10fd47dfbb2c50a6
+      - e9b5b1b9c0a971413c0fda3d3198045c
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.kitchen_wifi
+      message: Time for Noah to leave for school.
+    target:
+      entity_id: tts.google_translate_en_com
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      message: Time for Noah to leave for school.
+      media_player_entity_id: media_player.noah_s_room_display
+    target:
+      entity_id: tts.google_translate_en_com
+  mode: single
+- id: '1756130157386'
+  alias: Close Shades at Sunset
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 00:15:00
+  conditions: []
+  actions:
+  - device_id: 2bc86c9b2b78081f4c9627039bc8d76f
+    domain: cover
+    entity_id: 85a84620b0a45282962a7bf0a3570080
+    type: close
+  - device_id: e10d7788ca63c4f5836e50f6e30e0244
+    domain: cover
+    entity_id: 69ba9bd33bf1e695d1af3e5099b9a3e8
+    type: close
+  - device_id: e9f8339a2c804b1f1e81319c62ce66c9
+    domain: cover
+    entity_id: dd080a402d575b05fbbbf86ce1f3075e
+    type: close
+  - device_id: 8e0330a181e924f5ef50f8a63a00bc36
+    domain: cover
+    entity_id: 44e68232705f346c95855b31d0f5bd96
+    type: close
+  - device_id: 5dac39ba74812288c139ace77c89d0f0
+    domain: cover
+    entity_id: 982d6c573d447cfdd144154eeaaa483f
+    type: close
+  mode: single
+- id: '1756138430443'
+  alias: Open Shades in the Morning
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:15:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+  conditions: []
+  actions:
+  - device_id: 2bc86c9b2b78081f4c9627039bc8d76f
+    domain: cover
+    entity_id: 85a84620b0a45282962a7bf0a3570080
+    type: open
+  - device_id: e10d7788ca63c4f5836e50f6e30e0244
+    domain: cover
+    entity_id: 69ba9bd33bf1e695d1af3e5099b9a3e8
+    type: open
+  - device_id: e9f8339a2c804b1f1e81319c62ce66c9
+    domain: cover
+    entity_id: dd080a402d575b05fbbbf86ce1f3075e
+    type: open
+  - device_id: 8e0330a181e924f5ef50f8a63a00bc36
+    domain: cover
+    entity_id: 44e68232705f346c95855b31d0f5bd96
+    type: open
+  - device_id: 5dac39ba74812288c139ace77c89d0f0
+    domain: cover
+    entity_id: 982d6c573d447cfdd144154eeaaa483f
+    type: open
+  mode: single
+- id: '1756167965393'
+  alias: Detect Door Open Too Long
+  description: ''
+  triggers:
+  - type: opened
+    device_id: eeb10a372085f2897d343bb49e03edbb
+    entity_id: 1becdf1bdd06c92129ceec73995a9d61
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+  - type: opened
+    device_id: 19e03c08b4f4eeda4a37d870e82711fb
+    entity_id: 1274d8f04aa335cb7d2eb814c5d3baf3
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      title: Door Open!
+      message: '{{trigger.to_state.attributes.friendly_name}} has been open too long.
+        Check the cats!'
+  mode: single
+- id: '1756435018018'
+  alias: Renew SSL Certificate
+  description: Restart Let's Encrypt Add-On to review certificate weekly.
+  triggers:
+  - trigger: time
+    at: 05:00:00
+    weekday:
+    - sun
+  conditions: []
+  actions:
+  - action: hassio.addon_restart
+    metadata: {}
+    data:
+      addon: core_letsencrypt
+  mode: single
+- id: '1756477240456'
+  alias: Auto-Close Garage Door
+  description: Close garage door after 4 minutes
+  triggers:
+  - type: opened
+    device_id: f0ea230b51a8cf9f5a79faed04967e82
+    entity_id: f5297189f603ea1486278a9a8499b33d
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 4
+      seconds: 0
+  conditions: []
+  actions:
+  - type: turn_off
+    device_id: f0ea230b51a8cf9f5a79faed04967e82
+    entity_id: 8c527bcd3b32605078da445c77cc9c53
+    domain: switch
+  mode: single
+- id: '1756496177967'
+  alias: Garage Open Too Long
+  description: Notify for garage open more than 10 minutes
+  triggers:
+  - type: opened
+    device_id: f0ea230b51a8cf9f5a79faed04967e82
+    entity_id: f5297189f603ea1486278a9a8499b33d
+    domain: binary_sensor
+    trigger: device
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Garage has been open for 10 minutes.
+  mode: single
+- id: '1757704720973'
+  alias: Turn of Basement Stairs Light after duration
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - light.basement_stairs
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 15
+      seconds: 0
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: 4e95d80dbab6e4aa9c73d48994bfc02f
+  mode: single
+- id: '1757713028237'
+  alias: Front Porch On at Dark
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunset
+    offset: 0
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      device_id: 47f07fb73ac0e8a7b80a83ee24512d6e
+  mode: single
+- id: '1757713108105'
+  alias: Front Porch Off Late Night
+  description: ''
+  triggers:
+  - trigger: time
+    at: 01:00:00
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      device_id: 47f07fb73ac0e8a7b80a83ee24512d6e
+  mode: single
+- id: '1758308712501'
+  alias: Reboot Cable Modem Once If Disconnected
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.external_internet_access
+    from: 'on'
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.internal_network_access
+    state: 'on'
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      message: Rebooted Cable Modem
+  - action: script.reboot_cable_modem
+    metadata: {}
+    data: {}
+  mode: single
+- id: '1759494163208'
+  alias: Porch light on in the morning
+  description: ''
+  triggers:
+  - trigger: time
+    at: 07:00:00
+  conditions:
+  - condition: sun
+    before: sunrise
+  actions:
+  - type: turn_on
+    device_id: 47f07fb73ac0e8a7b80a83ee24512d6e
+    entity_id: 1fa6c3e229d9513aa21b57604e758e81
+    domain: light
+  mode: single
+- id: '1759494324455'
+  alias: Front Porch Off at Sunrise
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+  conditions:
+  - condition: device
+    type: is_on
+    device_id: 47f07fb73ac0e8a7b80a83ee24512d6e
+    entity_id: 1fa6c3e229d9513aa21b57604e758e81
+    domain: light
+  actions:
+  - type: turn_off
+    device_id: 47f07fb73ac0e8a7b80a83ee24512d6e
+    entity_id: 1fa6c3e229d9513aa21b57604e758e81
+    domain: light
+  mode: single
+- id: '1759866420145'
+  alias: Notify on Desktop Backup Too Old
+  description: ''
+  triggers:
+  - trigger: template
+    value_template: '{{ as_timestamp(now()) > (as_timestamp(states(''input_datetime.last_desktop_backup''))
+      + (48 * 3600)) }}'
+    id: last_backup_too_old
+  conditions: []
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      message: 'Last Desktop Backup Too Old: {{ states(''input_datetime.last_desktop_backup'')
+        }}'
+      title: Last Desktop Backup Too Old
+      notification_id: desktop_backup_too_old
+  mode: single

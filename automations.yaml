@@ -307,7 +307,7 @@
     - POST
     - PUT
     local_only: true
-    webhook_id: -8s7VFmxvDrJIl3tmfHgqc5Qf
+    webhook_id: !secret desktop_backup_webhook_id
   conditions: []
   actions:
   - action: input_datetime.set_datetime

@@ -298,25 +298,6 @@
     target:
       entity_id: tts.google_translate_en_com
   mode: single
-- id: '1755269858350'
-  alias: Desktop Backup Successful
-  description: ''
-  triggers:
-  - trigger: webhook
-    allowed_methods:
-    - POST
-    - PUT
-    local_only: true
-    webhook_id: !secret desktop_backup_webhook_id
-  conditions: []
-  actions:
-  - action: input_datetime.set_datetime
-    metadata: {}
-    data:
-      timestamp: '{{ now().timestamp() }}'
-    target:
-      entity_id: input_datetime.last_desktop_backup
-  mode: single
 - id: '1755309366927'
   alias: Turn off TV on home screen
   description: ''

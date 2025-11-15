@@ -57,7 +57,11 @@
     data:
       message: '{% if trigger.platform is not none %} {{trigger.to_state.attributes.friendly_name}}
         {% else %} Unknown Sensor {% endif %}has detected water!'
-      title: Water Sensor Triggered!
+      title: Water Sensor Triggered!  Water Shut Off!
+  - type: turn_off
+    device_id: 645a8c05456d6fc5963b1f4e4355c868
+    entity_id: 9ef64670d2db95b97b1c87119b9a448d
+    domain: switch
   mode: single
 - id: '1753622587006'
   alias: Alert on Power Loss

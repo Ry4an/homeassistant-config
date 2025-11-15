@@ -3,7 +3,7 @@ mqtt:
   base_topic: zigbee2mqtt
   server: mqtt://core-mosquitto:1883
   user: addons
-  password: !secret mqtt_password
+  password: foo7Ekee9Eiphoh9aiNg5teoyie0eeyooDomaidahZah1oiXeeyaighai9ko8foh
 serial:
   port: tcp://192.168.86.60:6638
   adapter: ember
@@ -81,3 +81,11 @@ devices:
     friendly_name: Primary Bedroom Fan Switch
   '0x04e3e5fffe5f421e':
     friendly_name: Primary Bedroom Fan Light Switch
+  '0x187a3efffe2ffd7b':
+    friendly_name: Attic Lights
+  '0xc02cedfffec01d08':
+    friendly_name: Under Cabinet Sink
+  '0x7cc6b6fffec8ab32':
+    friendly_name: Under Cabinet Stove
+  '0xa4c1388a0955931c':
+    friendly_name: Water Shutoff

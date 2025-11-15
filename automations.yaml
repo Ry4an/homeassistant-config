@@ -361,6 +361,12 @@
       device_id:
       - 5994e009897952ba10fd47dfbb2c50a6
       - e9b5b1b9c0a971413c0fda3d3198045c
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.6
+    target:
+      device_id: e9b5b1b9c0a971413c0fda3d3198045c
   - action: tts.speak
     metadata: {}
     data:
@@ -426,22 +432,32 @@
     domain: cover
     entity_id: 85a84620b0a45282962a7bf0a3570080
     type: open
+    enabled: false
   - device_id: e10d7788ca63c4f5836e50f6e30e0244
     domain: cover
     entity_id: 69ba9bd33bf1e695d1af3e5099b9a3e8
     type: open
+    enabled: false
   - device_id: e9f8339a2c804b1f1e81319c62ce66c9
     domain: cover
     entity_id: dd080a402d575b05fbbbf86ce1f3075e
     type: open
+    enabled: false
   - device_id: 8e0330a181e924f5ef50f8a63a00bc36
     domain: cover
     entity_id: 44e68232705f346c95855b31d0f5bd96
     type: open
+    enabled: false
   - device_id: 5dac39ba74812288c139ace77c89d0f0
     domain: cover
     entity_id: 982d6c573d447cfdd144154eeaaa483f
     type: open
+    enabled: false
+  - action: scene.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: scene.shades_all_open
   mode: single
 - id: '1756167965393'
   alias: Detect Door Open Too Long
@@ -655,4 +671,62 @@
         }}'
       title: Last Desktop Backup Too Old
       notification_id: desktop_backup_too_old
+  mode: single
+- id: '1762488178029'
+  alias: Under Cabinet Lights Sync On
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.under_cabinet_stove
+    from:
+    - 'off'
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.under_cabinet_sink
+  mode: single
+- id: '1762488274171'
+  alias: Under Cabinet Lights Sync Off
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - switch.under_cabinet_stove
+    from:
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.under_cabinet_sink
+  mode: single
+- id: '1762896573256'
+  alias: Air Sensor Disconnected
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.apollo_air_1_abd134_online
+    from:
+    - 'on'
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.mobile_app_pixel_8_pro
+    metadata: {}
+    data:
+      message: check the living room charger power
+      title: Air sensor disconnected
   mode: single

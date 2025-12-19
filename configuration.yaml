@@ -26,4 +26,4 @@ notify:
   - name: ALL_DEVICES
     platform: group
     services:
-      - action: mobile_app_pixel_8_pro
+      - action: mobile_app_purple_pixel

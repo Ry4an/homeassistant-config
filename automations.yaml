@@ -728,9 +728,23 @@
       seconds: 0
   conditions: []
   actions:
-  - action: notify.mobile_app_pixel_8_pro
+  - action: notify.mobile_app_purple_pixel
     metadata: {}
     data:
       message: check the living room charger power
       title: Air sensor disconnected
+  mode: single
+- id: '1765902087883'
+  alias: Turn of Christmas Tree at 1am
+  description: ''
+  triggers:
+  - trigger: time
+    at: 01:00:00
+  conditions: []
+  actions:
+  - action: light.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: light.christmas_tree
   mode: single

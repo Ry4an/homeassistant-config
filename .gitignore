@@ -18,3 +18,6 @@ zigbee2mqtt/coordinator_backup.json
 zigbee2mqtt/database.db
 zigbee2mqtt/log
 zigbee2mqtt/state.json
+zigbee2mqtt/configuration_backup_v4.yaml
+zigbee2mqtt/migration-4-to-5.log
+

@@ -27,3 +27,11 @@ notify:
     platform: group
     services:
       - action: mobile_app_purple_pixel
+
+sensor:
+  - platform: rest
+    resource: http://192.168.86.65/json/report
+    unique_id: meshtastic_home_uptime
+    name: "Meshtastic Home Uptime"
+    unit_of_measurement: s
+    value_template: "{{ value_json.data.airtime.seconds_since_boot }}"

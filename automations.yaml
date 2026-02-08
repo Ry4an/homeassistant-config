@@ -748,3 +748,39 @@
     target:
       entity_id: light.christmas_tree
   mode: single
+- id: '1770511505805'
+  alias: Meshtastic Base Offline
+  description: Notify via phone and persistent message when Meshtastic Base is not
+    available.
+  triggers:
+  - trigger: template
+    value_template: '{{ now() - states.sensor.meshtastic_home_uptime.last_changed
+      >= timedelta(minutes=30) }}'
+  conditions: []
+  actions:
+  - action: persistent_notification.create
+    metadata: {}
+    data:
+      title: Meshtastic Base is Offline
+      message: Last update more than 30 minutes ago
+      notification_id: meshtastic_offline
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: Last update more than 30 minutes ago.
+      title: Meshtastic base offline
+  mode: single
+- id: '1770558117747'
+  alias: Relay LoRa to Phone
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.meshtastic_messages
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: '{{ trigger.to_state.state }}'
+  mode: single

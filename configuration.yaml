@@ -35,3 +35,5 @@ sensor:
     name: "Meshtastic Home Uptime"
     unit_of_measurement: s
     value_template: "{{ value_json.data.airtime.seconds_since_boot }}"
+
+mqtt: !include meshtastic_mqtt.yaml

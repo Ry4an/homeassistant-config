@@ -4,8 +4,8 @@ sensor:
     unique_id: "meshtastic_messages"
     state_topic: "msh/US/2/json/LongFast/!087a2c48"
     value_template: >-
-      {% if value_json.payload.text is defined %}
-        {{ value_json.payload.text }}
+      {% if value_json.payload is defined and value_json.payload.text is defined %}
+        {{ state_attr('input_select.meshtastic_channels', 'options')[value_json.channel] ~ ": " ~ value_json.payload.text }}
       {% else %}
         {{ this.state }}
       {% endif %}

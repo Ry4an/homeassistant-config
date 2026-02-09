@@ -777,10 +777,17 @@
   - trigger: state
     entity_id:
     - sensor.meshtastic_messages
-  conditions: []
+  conditions:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.meshtastic_messages
+      state:
+      - unavailable
+      - unknown
   actions:
   - action: notify.all_devices
     metadata: {}
     data:
-      message: '{{ trigger.to_state.state }}'
+      message: 'Meshtastic: {{ trigger.to_state.state }}'
   mode: single

@@ -772,7 +772,7 @@
   mode: single
 - id: '1770558117747'
   alias: Relay LoRa to Phone
-  description: ''
+  description: Relay LoRa messages to phone when I'm not home
   triggers:
   - trigger: state
     entity_id:
@@ -785,6 +785,10 @@
       state:
       - unavailable
       - unknown
+    - condition: state
+      entity_id: binary_sensor.is_ry4an_home
+      state:
+      - 'on'
   actions:
   - action: notify.all_devices
     metadata: {}

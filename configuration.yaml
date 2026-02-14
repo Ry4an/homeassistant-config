@@ -28,14 +28,48 @@ notify:
     services:
       - action: mobile_app_purple_pixel
 
-sensor:
-  - platform: rest
-    resource: http://192.168.86.65/json/report
-    unique_id: meshtastic_home_uptime
-    name: "Meshtastic Home Uptime"
-    unit_of_measurement: s
-    timeout: 20
+rest:
+  - resource: http://192.168.86.65/json/report
+    timeout: 30
     scan_interval: 60
-    value_template: "{{ value_json.data.airtime.seconds_since_boot }}"
+    sensor:
+      - name: "Meshtastic Home Uptime"
+        unique_id: meshtastic_home_uptime
+        value_template: "{{ value_json.data.airtime.seconds_since_boot }}"
+        unit_of_measurement: s
+
+      - name: "Meshtastic Reboot Count"
+        unique_id: meshtastic_reboot_count
+        value_template: "{{ value_json.data.device.reboot_counter | int }}"
+
+      - name: "Meshtastic Heap Free"
+        unique_id: meshtastic_heap_free
+        value_template: "{{ value_json.data.memory.heap_free }}"
+        unit_of_measurement: B
+
+      - name: "Meshtastic Heap Total"
+        unique_id: meshtastic_heap_total
+        value_template: "{{ value_json.data.memory.heap_total }}"
+        unit_of_measurement: B
+
+      - name: "Meshtastic RAM Free"
+        unique_id: meshtastic_ram_free
+        value_template: "{{ value_json.data.memory.psram_free }}"
+        unit_of_measurement: B
+
+      - name: "Meshtastic RAM Total"
+        unique_id: meshtastic_ram_total
+        value_template: "{{ value_json.data.memory.psram_total }}"
+        unit_of_measurement: B
+
+      - name: "Meshtastic Channel Utilization"
+        unique_id: meshtastic_channel_utilization
+        value_template: "{{ value_json.data.airtime.channel_utilization }}"
+        unit_of_measurement: "%"
+
+      - name: "Meshtastic Transmit Utilization"
+        unique_id: meshtastic_transmit_utilization
+        value_template: "{{ value_json.data.airtime.utilization_tx }}"
+        unit_of_measurement: "%"
 
 mqtt: !include meshtastic_mqtt.yaml

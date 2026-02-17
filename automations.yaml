@@ -178,14 +178,13 @@
   alias: Announce Dryer
   description: ''
   triggers:
-  - trigger: numeric_state
+  - trigger: state
     entity_id:
-    - sensor.dryer_breakers_20_22_power_minute_average
-    for:
-      hours: 0
-      minutes: 1
-      seconds: 0
-    below: 50
+    - input_select.dryer_status
+    from:
+    - RUNNING
+    to:
+    - IDLE
   conditions:
   - condition: state
     entity_id: schedule.do_not_disturb
@@ -750,8 +749,7 @@
   mode: single
 - id: '1770511505805'
   alias: Meshtastic Base Offline
-  description: Notify via phone and persistent message when Meshtastic Base is not
-    available.
+  description: Notify when Meshtastic Base is not available and attempt restart.
   triggers:
   - trigger: template
     value_template: '{{ now() - states.sensor.meshtastic_home_uptime.last_changed
@@ -769,6 +767,21 @@
     data:
       message: Last update more than 30 minutes ago.
       title: Meshtastic base offline
+  - action: switch.turn_off
+    metadata: {}
+    target:
+      device_id: 4d7237dd096ede4ada41d3c4a0a3a3bc
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - action: switch.turn_on
+    metadata: {}
+    target:
+      device_id: 4d7237dd096ede4ada41d3c4a0a3a3bc
+    data: {}
   mode: single
 - id: '1770558117747'
   alias: Relay LoRa to Phone
@@ -794,4 +807,46 @@
     metadata: {}
     data:
       message: 'Meshtastic: {{ trigger.to_state.state }}'
+  mode: single
+- id: '1771334881284'
+  alias: Detect Dryer Stopped
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.dryer_breakers_20_22_power_minute_average
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    below: 50
+  conditions: []
+  actions:
+  - action: input_select.select_option
+    metadata: {}
+    target:
+      entity_id: input_select.dryer_status
+    data:
+      option: IDLE
+  mode: single
+- id: '1771361518624'
+  alias: Detect Dryer Started
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.dryer_breakers_20_22_power_minute_average
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    above: 1000
+  conditions: []
+  actions:
+  - action: input_select.select_option
+    metadata: {}
+    target:
+      entity_id: input_select.dryer_status
+    data:
+      option: RUNNING
   mode: single

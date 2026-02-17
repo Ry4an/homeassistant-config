@@ -89,3 +89,5 @@ devices:
     friendly_name: Under Cabinet Stove
   '0xa4c1388a0955931c':
     friendly_name: Water Shutoff
+  '0x00124b002e779717':
+    friendly_name: Meshtastic Base Power

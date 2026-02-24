@@ -9,3 +9,14 @@ sensor:
       {% else %}
         {{ this.state }}
       {% endif %}
+
+  - name: "Meshtastic Neighbor Count"
+    unique_id: "meshtastic_neighbor_count"
+    state_topic: "msh/US/2/json/LongFast/!087a2c48"
+    state_class: "measurement"
+    value_template: >-
+      {% if value_json.payload is defined and value_json.payload.neighbors_count is defined %}
+        {{ value_json.payload.neighbors_count }}
+      {% else %}
+        {{ this.state }}
+      {% endif %}

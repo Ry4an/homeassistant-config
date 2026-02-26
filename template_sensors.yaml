@@ -1,0 +1,7 @@
+- triggers:
+    - trigger: webhook
+      webhook_id: !secret meshtastic_info_webhook_id
+  sensor:
+    - name: "Meshtastic Firmware"
+      unique_id: "meshtastic_firmware"
+      state: "{{ trigger.json.metadata.firmwareVersion }}"

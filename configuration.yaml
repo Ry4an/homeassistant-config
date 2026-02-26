@@ -73,3 +73,5 @@ rest:
         unit_of_measurement: "%"
 
 mqtt: !include meshtastic_mqtt.yaml
+
+template: !include template_sensors.yaml

@@ -94,20 +94,24 @@
       title: Power Restored
   mode: single
 - id: '1754009431185'
-  alias: AC May Be Malfunctioning
+  alias: Heat Pump May Be Malfunctioning
   description: ''
   triggers:
   - trigger: numeric_state
     entity_id:
     - sensor.tv_room_climate_sensor_temperature
     above: 75
+  - trigger: numeric_state
+    entity_id:
+    - sensor.tv_room_climate_sensor_temperature
+    below: 64
   conditions: []
   actions:
   - action: notify.all_devices
     metadata: {}
     data:
-      message: Living room is over 75 degrees
-      title: Living room is hot
+      message: Living room is over 75 degrees or under 64 degrees.
+      title: Heat Pump might not be working!
   mode: single
 - id: '1754015852684'
   alias: Low Disk Warning
@@ -849,4 +853,24 @@
       entity_id: input_select.dryer_status
     data:
       option: RUNNING
+  mode: single
+- id: '1773498127628'
+  alias: Sump  Pump Running
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.sump_pump_power_minute_average
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+    above: 100
+  conditions: []
+  actions:
+  - action: script.emergency_message
+    metadata: {}
+    data:
+      message: The Sump Pump is Running
+      title: The Sump Pump is Running
   mode: single

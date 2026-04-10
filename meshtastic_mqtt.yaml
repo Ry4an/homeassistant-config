@@ -42,5 +42,18 @@ sensor:
       {% if value_json.from == 2411828582 and value_json.payload is defined and value_json.payload.voltage is defined %}
         {{ value_json.payload.voltage | round(2) }}
       {% else %}
-        {{ this.state | round(2) }}
+        {{ this.state }}
+      {% endif %}
+
+  - name: "Meshtastic BPE Uptime"
+    unique_id: "meshtastic_bpe_uptime"
+    state_topic: "msh/US/2/json/LongFast/!087a2c48"
+    state_class: "measurement"
+    device_class: "duration"
+    unit_of_measurement: "s"
+    value_template: >-
+      {% if value_json.from == 2411828582 and value_json.payload is defined and value_json.payload.uptime_seconds is defined %}
+        {{ value_json.payload.uptime_seconds }}
+      {% else %}
+        {{ this.state }}
       {% endif %}

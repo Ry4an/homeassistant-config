@@ -11,12 +11,6 @@ automation noedit: !include automations_with_secrets.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 
-# https://www.home-assistant.io/integrations/decora_wifi
-#light:
-#  - platform: decora_wifi
-#    username: !secret leviton_email
-#    password: !secret leviton_password
-
 http:
   use_x_forwarded_for: true
   trusted_proxies:

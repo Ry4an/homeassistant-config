@@ -4,7 +4,7 @@ sensor:
     unique_id: "meshtastic_messages"
     state_topic: "msh/US/2/json/LongFast/!087a2c48"
     value_template: >-
-      {% if value_json.payload is defined and value_json.payload.text is defined %}
+      {% if value_json.from == 142224456 and value_json.payload is defined and value_json.payload.text is defined %}
         {{ state_attr('input_select.meshtastic_channels', 'options')[value_json.channel] ~ ": " ~ value_json.payload.text }}
       {% else %}
         {{ this.state }}
@@ -15,8 +15,32 @@ sensor:
     state_topic: "msh/US/2/json/LongFast/!087a2c48"
     state_class: "measurement"
     value_template: >-
-      {% if value_json.payload is defined and value_json.payload.neighbors_count is defined %}
+      {% if value_json.from == 142224456 and value_json.payload is defined and value_json.payload.neighbors_count is defined %}
         {{ value_json.payload.neighbors_count }}
       {% else %}
         {{ this.state }}
+      {% endif %}
+
+  - name: "Meshtastic BPE Battery"
+    unique_id: "meshtastic_bpe_battery"
+    state_topic: "msh/US/2/json/LongFast/!087a2c48"
+    state_class: "measurement"
+    unit_of_measurement: "%"
+    value_template: >-
+      {% if value_json.from == 2411828582 and value_json.payload is defined and value_json.payload.battery_level is defined %}
+        {{ value_json.payload.battery_level }}
+      {% else %}
+        {{ this.state }}
+      {% endif %}
+
+  - name: "Meshtastic BPE Voltage"
+    unique_id: "meshtastic_bpe_voltage"
+    state_topic: "msh/US/2/json/LongFast/!087a2c48"
+    state_class: "measurement"
+    unit_of_measurement: "V"
+    value_template: >-
+      {% if value_json.from == 2411828582 and value_json.payload is defined and value_json.payload.voltage is defined %}
+        {{ value_json.payload.voltage | round(2) }}
+      {% else %}
+        {{ this.state | round(2) }}
       {% endif %}

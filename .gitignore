@@ -1,5 +1,6 @@
 .cloud
 .ha_run.lock
+.cache
 .*.august.conf
 .storage
 Abode

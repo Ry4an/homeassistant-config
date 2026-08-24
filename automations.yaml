@@ -120,7 +120,7 @@
   - trigger: numeric_state
     entity_id:
     - sensor.home_assistant_host_disk_free
-    below: 14
+    below: 7
   conditions: []
   actions:
   - action: persistent_notification.create
@@ -128,11 +128,11 @@
     data:
       title: Disk Space Low
       notification_id: disk-low
-      message: Disk is more than half full
+      message: Disk is more than 75% full
   - action: notify.all_devices
     metadata: {}
     data:
-      message: Home Assistant disk is more than half full
+      message: Home Assistant disk is more than 75% full
       title: Disk Space Low
   mode: single
 - id: '1754403564447'
@@ -400,26 +400,11 @@
     offset: 00:15:00
   conditions: []
   actions:
-  - device_id: 2bc86c9b2b78081f4c9627039bc8d76f
-    domain: cover
-    entity_id: 85a84620b0a45282962a7bf0a3570080
-    type: close
-  - device_id: e10d7788ca63c4f5836e50f6e30e0244
-    domain: cover
-    entity_id: 69ba9bd33bf1e695d1af3e5099b9a3e8
-    type: close
-  - device_id: e9f8339a2c804b1f1e81319c62ce66c9
-    domain: cover
-    entity_id: dd080a402d575b05fbbbf86ce1f3075e
-    type: close
-  - device_id: 8e0330a181e924f5ef50f8a63a00bc36
-    domain: cover
-    entity_id: 44e68232705f346c95855b31d0f5bd96
-    type: close
-  - device_id: 5dac39ba74812288c139ace77c89d0f0
-    domain: cover
-    entity_id: 982d6c573d447cfdd144154eeaaa483f
-    type: close
+  - action: scene.turn_on
+    metadata: {}
+    target:
+      entity_id: scene.shades_all_closed
+    data: {}
   mode: single
 - id: '1756138430443'
   alias: Open Shades in the Morning
@@ -435,31 +420,6 @@
     - fri
   conditions: []
   actions:
-  - device_id: 2bc86c9b2b78081f4c9627039bc8d76f
-    domain: cover
-    entity_id: 85a84620b0a45282962a7bf0a3570080
-    type: open
-    enabled: false
-  - device_id: e10d7788ca63c4f5836e50f6e30e0244
-    domain: cover
-    entity_id: 69ba9bd33bf1e695d1af3e5099b9a3e8
-    type: open
-    enabled: false
-  - device_id: e9f8339a2c804b1f1e81319c62ce66c9
-    domain: cover
-    entity_id: dd080a402d575b05fbbbf86ce1f3075e
-    type: open
-    enabled: false
-  - device_id: 8e0330a181e924f5ef50f8a63a00bc36
-    domain: cover
-    entity_id: 44e68232705f346c95855b31d0f5bd96
-    type: open
-    enabled: false
-  - device_id: 5dac39ba74812288c139ace77c89d0f0
-    domain: cover
-    entity_id: 982d6c573d447cfdd144154eeaaa483f
-    type: open
-    enabled: false
   - action: scene.turn_on
     metadata: {}
     data: {}
@@ -490,12 +450,12 @@
       seconds: 0
   conditions: []
   actions:
-  - action: notify.all_devices
+  - action: script.emergency_message
     metadata: {}
     data:
-      title: Door Open!
       message: '{{trigger.to_state.attributes.friendly_name}} has been open too long.
         Check the cats!'
+      title: Door Open!
   mode: single
 - id: '1756435018018'
   alias: Renew SSL Certificate
@@ -873,4 +833,254 @@
     data:
       message: The Sump Pump is Running
       title: The Sump Pump is Running
+  mode: single
+- id: '1775826941497'
+  alias: BPE Solar Node Offline
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.meshtastic_bpe_uptime
+    for:
+      hours: 24
+      minutes: 0
+      seconds: 0
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      message: BPE node uptime hasn't changed for 24 hours
+      title: BPE Solar Offline
+  mode: single
+- id: '1777056082683'
+  alias: Ruby Feeding Detected
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.dog_food_sensor_vibration
+    from:
+    - 'off'
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: input_datetime.set_datetime
+    metadata: {}
+    data:
+      timestamp: '{{ now().timestamp() }}'
+    target:
+      entity_id:
+      - input_datetime.ruby_last_fed
+  - action: input_text.set_value
+    metadata: {}
+    data:
+      value: Ruby last ate (or fed) at {{ now().strftime("%I:%M%p") }}
+    target:
+      entity_id:
+      - input_text.ruby_last_fed
+  mode: single
+- id: '1784332060895'
+  alias: Count Catio Openings
+  description: ''
+  triggers:
+  - trigger: door.opened
+    target:
+      entity_id: binary_sensor.catio_door_vibration
+    options:
+      behavior: each
+      for: 00:00:00
+  conditions: []
+  actions:
+  - action: counter.increment
+    metadata: {}
+    target:
+      entity_id: counter.catio_openings
+    data: {}
+  mode: single
+- id: '1785071313857'
+  alias: Notify on Vault Door Opened
+  description: ''
+  triggers:
+  - trigger: door.opened
+    target:
+      label_id: vault
+    options:
+      behavior: each
+  conditions: []
+  actions:
+  - action: notify.all_devices
+    metadata: {}
+    data:
+      title: Vault Door Opened!
+      message: '{% if trigger.platform is not none %} {{trigger.to_state.attributes.friendly_name}}         {%
+        else %} Unknown Door {% endif %}has been opened!'
+  mode: single
+- id: '1785873346566'
+  alias: Notify on Mail Box
+  description: ''
+  triggers:
+  - trigger: door.opened
+    target:
+      device_id: ef49bf1f5d82db03957b8d8e038ec3f5
+    options:
+      behavior: each
+      for: 00:00:00
+  conditions:
+  - condition: template
+    value_template: '{{ this.attributes.last_triggered is none or this.attributes.last_triggered
+      < today_at("00:00") }}
+
+      '
+  - condition: schedule.is_off
+    target:
+      entity_id: schedule.do_not_disturb
+    options:
+      behavior: any
+      for: 00:00:00
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    target:
+      entity_id:
+      - media_player.guest_bedroom_speaker
+      - media_player.kitchen_wifi
+    data:
+      is_volume_muted: false
+  - action: tts.cloud_say
+    metadata: {}
+    data:
+      cache: false
+      entity_id: media_player.kitchen_wifi
+      message: mail was delivered
+  - action: tts.cloud_say
+    metadata: {}
+    data:
+      cache: false
+      entity_id: media_player.guest_bedroom_speaker
+      message: mail was delivered
+  mode: single
+- id: '1787055260995'
+  alias: Announce Cat Door
+  description: ''
+  triggers:
+  - trigger: door.opened
+    target:
+      entity_id: binary_sensor.catio_door_vibration
+    options:
+      behavior: each
+      for: 00:00:00
+  conditions:
+  - condition: schedule.is_off
+    target:
+      entity_id: schedule.do_not_disturb
+    options:
+      behavior: any
+      for: 00:00:00
+  actions:
+  - action: media_player.volume_mute
+    metadata: {}
+    target:
+      entity_id: media_player.kitchen_wifi
+    data:
+      is_volume_muted: false
+  - action: tts.cloud_say
+    metadata: {}
+    data:
+      cache: false
+      message: Cat Door
+      entity_id: media_player.kitchen_wifi
+  mode: single
+- id: '1787501905284'
+  alias: Ry4an Location Changes
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.purple_pixel_wi_fi_connection
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - Tobacco Rose Wi-Fi Network
+        - TheRose
+        - Black Diesel Guest Network
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: at the lounge
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - LUCID_AP_8769
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: driving
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - 1019 Says Hi
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: at home
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - MGuest-UMHS
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: at UM ER
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - iguest
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: at St. Joe's ER
+    - conditions:
+      - condition: state
+        entity_id: sensor.purple_pixel_wi_fi_connection
+        state:
+        - Staff
+      sequence:
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.ry4an_last_location
+        data:
+          value: at HVA
+  - action: input_text.set_value
+    metadata: {}
+    target:
+      entity_id: input_text.ry4an_location
+    data:
+      value: Ry4an {{ states('input_text.ry4an_last_location') }} at {{ now().strftime("%I:%M%p")
+        }}
   mode: single

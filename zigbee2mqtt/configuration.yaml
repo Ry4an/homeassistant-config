@@ -91,3 +91,13 @@ devices:
     friendly_name: Water Shutoff
   '0x00124b002e779717':
     friendly_name: Meshtastic Base Power
+  '0xa4c138c1dba7e0ba':
+    friendly_name: Dog Food Sensor
+  '0xffffb40e06068c3f':
+    friendly_name: Catio Door
+  '0xffffb40e06060352':
+    friendly_name: Basement Cabinet Door
+  '0xffffb40e06067ff0':
+    friendly_name: Safe Door
+  '0xa4c138127f80ffff':
+    friendly_name: Mailbox Door
